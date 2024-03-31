@@ -7,7 +7,7 @@ CS370 term project
 
 ## Hardware Initialization
 Wire your Raspberry Pi to the ADXL345 as shown in the following diagram:
-![Alt text](docs/Pi2ADXL345.jpg)
+![Raspberry Pi to ADXL345 wiring diagram](hardware/Pi2ADXL345.jpg)
 
 
 ## Software Initialization
