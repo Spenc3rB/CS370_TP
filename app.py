@@ -1,12 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for
+import threading
+import random
 import os
 import time
-import random
-import board
 import busio
+import board
 import adafruit_adxl34x
 import pygame
-from threading import Thread
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 app = Flask(__name__)
 
@@ -14,50 +14,24 @@ UPLOAD_FOLDER = 'sounds'
 ALLOWED_EXTENSIONS = {'mp3'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+sound_files = []  # Global list to hold the available sound files
+lock = threading.Lock()  # Lock to ensure thread-safe access to the list of sound files
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/')
-def index():
-    return render_template('index.html')
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = file.filename
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('index'))
-    return render_template('index.html')
+def update_sound_files():
+    global sound_files
+    while True:
+        with lock:
+            sound_files = [file for file in os.listdir(app.config['UPLOAD_FOLDER']) if file.endswith(".mp3")]
+        time.sleep(5)  # Update the list of sound files every 5 seconds
+
 
 def play_random_audio():
-    # Initialize Pygame mixer for audio
     pygame.mixer.init()
-
-    # Function to get list of audio files from the "sounds" subdirectory
-    def get_audio_files(directory):
-        audio_files = []
-        for root, dirs, files in os.walk(directory):
-            for file in files:
-                if file.endswith(".mp3"):
-                    audio_files.append(os.path.join(root, file))
-        return audio_files
-
-    # Directory containing audio files
-    audio_directory = "sounds"
-
-    # Get list of audio files
-    audio_files = get_audio_files(audio_directory)
-
     i2c = busio.I2C(board.SCL, board.SDA)
     accelerometer = adafruit_adxl34x.ADXL345(i2c)
     accelerometer.enable_tap_detection(tap_count=1, duration=50, threshold=50, latency=20, window=255)
@@ -66,18 +40,52 @@ def play_random_audio():
         print("%f %f %f" % accelerometer.acceleration)
         print("Accelerometer events:", accelerometer.events)
         time.sleep(0.5)
-        if accelerometer.events['tap'] == True:
-            # If motion is detected, randomly select an audio file to play
-            selected_audio = random.choice(audio_files)
-            pygame.mixer.music.load(selected_audio)
-            pygame.mixer.music.play()
-
+        if accelerometer.events['tap']:
+            with lock:
+                if sound_files:
+                    selected_audio = random.choice(sound_files)
+                    pygame.mixer.music.set_volume(1.0) # ensure the volume is always at 100%
+                    pygame.mixer.music.load(os.path.join(app.config['UPLOAD_FOLDER'], selected_audio))
+                    pygame.mixer.music.play()
         time.sleep(0.5)
 
+@app.route('/')
+def index():
+    return render_template('index.html', sounds=sound_files)
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('index'))
+    return render_template('index.html')
+
+
+@app.route('/delete/<filename>', methods=['POST'])
+def delete_sound(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return redirect(url_for('index'))
+    else:
+        return jsonify({'error': 'File not found'}), 404
+
+
 if __name__ == '__main__':
-    # Start the background process for playing random audio
-    audio_thread = Thread(target=play_random_audio)
+    sound_thread = threading.Thread(target=update_sound_files)
+    sound_thread.daemon = True
+    sound_thread.start()
+
+    audio_thread = threading.Thread(target=play_random_audio)
+    audio_thread.daemon = True
     audio_thread.start()
 
-    # Start the Flask server
     app.run(host='0.0.0.0', port=6969, debug=True)

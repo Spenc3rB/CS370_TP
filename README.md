@@ -43,9 +43,9 @@ pip3 install -r requirements.txt
 ```bash
 python3 app.py
 ```
-To automatically run the project on boot, first modify the `Screamba.service` file to point to the correct path of the `app.py` file. Then, copy the file to the `/etc/systemd/system` directory and enable the service:
+To automatically run the project on boot, first modify the `screaming-roomba.service` file to point to the correct path of the `app.py` file. Then, copy the file to the `/etc/systemd/system` directory and enable the service:
 ```bash
-sudo cp Screamba.service /etc/systemd/system/
+sudo cp screaming-roomba.service /etc/systemd/system/
 ```
 
 > Before moving any further, you might have modify your /etc/asound.conf file to include the output of your sound card. This article [here](https://raspberrypi.stackexchange.com/questions/95193/setting-up-config-for-alsa-at-etc-asound-conf) explains more. This can be done by running the following command:
@@ -61,15 +61,15 @@ defaults.ctl.card 1
 Now, reload the daemon, enable the service, and start the Screamba service:
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable Screamba
-sudo systemctl start Screamba
+sudo systemctl enable screaming-roomba
+sudo systemctl start screaming-roomba
 ```
 
 To check the status of the Screamba:
 ```bash
-sudo systemctl status Screamba
+sudo systemctl status screaming-roomba
 ```
 To stop the Screamba:
 ```bash
-sudo systemctl stop Screamba
+sudo systemctl stop screaming-roomba
 ```
