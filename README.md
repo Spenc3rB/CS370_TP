@@ -1,5 +1,5 @@
 # CS370_TP
-CS370 term project
+CS370 term project, tested on a Raspberry Pi 5 with an ADXL345 accelerometer. Follow for more updates...
 
 ## Team Members
 - Spencer Beer
