@@ -5,11 +5,20 @@ CS370 term project
 - Spencer Beer
 - Elaine Smith
 
-## Initialization
+## Hardware Initialization
+Wire your Raspberry Pi to the ADXL345 as shown in the following diagram:
+![Alt text](docs/Pi2ADXL345.jpg)
+
+
+## Software Initialization
 
 To initialize the project, run the following command:
 ```
 sudo apt upgrade && sudo apt update -y
+```
+Then clone the repository:
+```
+git clone https://github.com/ersmith01/CS370_TP
 ```
 
 To install the adafruit blinka library, run the following commands according to the [adafruit guide](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi):
@@ -32,5 +41,23 @@ pip3 install -r requirements.txt
 
 ## Running the Project
 ```bash
-python3 main.py
+python3 app.py
 ```
+To automatically run the project on boot, first modify the `Screamba.service` file to point to the correct path of the `app.py` file. Then, copy the file to the `/etc/systemd/system` directory and enable the service:
+```bash
+cp Screamba.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable Screamba.service
+sudo systemctl start Screamba.service
+```
+
+To check the status of the Screamba:
+```bash
+sudo systemctl status Screamba.service
+```
+To stop the Screamba:
+```bash
+sudo systemctl stop Screamba.service
+```
+
+
