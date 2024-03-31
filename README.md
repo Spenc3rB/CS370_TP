@@ -45,19 +45,31 @@ python3 app.py
 ```
 To automatically run the project on boot, first modify the `Screamba.service` file to point to the correct path of the `app.py` file. Then, copy the file to the `/etc/systemd/system` directory and enable the service:
 ```bash
-cp Screamba.service /etc/systemd/system/
+sudo cp Screamba.service /etc/systemd/system/
+```
+
+> Before moving any further, you might have modify your /etc/asound.conf file to include the output of your sound card. This article [here](https://raspberrypi.stackexchange.com/questions/95193/setting-up-config-for-alsa-at-etc-asound-conf) explains more. This can be done by running the following command:
+```bash
+sudo nano /etc/asound.conf
+```
+Then, add the following lines to the file:
+```
+defaults.pcm.card 1
+defaults.ctl.card 1
+```
+
+Now, reload the daemon, enable the service, and start the Screamba service:
+```bash
 sudo systemctl daemon-reload
-sudo systemctl enable Screamba.service
-sudo systemctl start Screamba.service
+sudo systemctl enable Screamba
+sudo systemctl start Screamba
 ```
 
 To check the status of the Screamba:
 ```bash
-sudo systemctl status Screamba.service
+sudo systemctl status Screamba
 ```
 To stop the Screamba:
 ```bash
-sudo systemctl stop Screamba.service
+sudo systemctl stop Screamba
 ```
-
-
