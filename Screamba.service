@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/<your-home-directory>/CS370_TP
+WorkingDirectory=/home/roomba/CS370_TP
 ExecStart=/usr/bin/python3 app.py
 Restart=always
 RestartSec=3
