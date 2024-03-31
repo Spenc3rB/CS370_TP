@@ -13,24 +13,34 @@
         <hr>
         <form method="POST" enctype="multipart/form-data" action="/upload">
             <div class="mb-3">
-                <label for="formFile" class="form-label">Upload sounds (.mp3 files), to be randomly chosen by <u>Screamba</u>:</label>
+                <h2><label for="formFile" class="form-label">Upload sounds (.mp3 files), to be randomly chosen by <u>Screamba</u>:</label></h2>
                 <input class="form-control" type="file" id="formFile" name="file">
             </div>
             <button class="btn btn-primary" type="submit">Upload</button>
         </form>
+        <hr>
 
         <!-- Dropdown to display list of sound files for deletion -->
-        <div class="mt-5">
-            <h2>Delete Sound File</h2>
+        <div>
+            <h2 class="mb-3">Delete .mp3 files from <u>Screamba's</u> database:</h2>
             <div class="input-group mb-3">
                 <select class="form-select" id="soundSelect">
-                    <option selected>Select sound file to delete...</option>
+                    <option selected>Select .mp3 file to delete...</option>
                     {% for sound in sounds %}
                         <option value="{{ sound }}">{{ sound }}</option>
                     {% endfor %}
                 </select>
                 <button class="btn btn-danger" type="button" onclick="deleteSound()">Delete</button>
             </div>
+        </div>
+        <hr>
+        
+        <!-- Volume control section -->
+        <!-- Volume control section -->
+        <div class="mt-5">
+            <h2>Control <u>Screamba's</u> volume level</h2>
+            <input type="range" min="0" max="100" value="50" class="form-range" id="volumeControl" data-min-alias="shut up" data-max-alias="yapping mode initiated">
+            <span id="volumeDisplay"></span>
         </div>
     </div>
 
