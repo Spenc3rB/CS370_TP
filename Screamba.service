@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=<path-to-CS370_TP>
-ExecStart=/usr/bin/python3 app.py
+ExecStart=<path-to-venv-python> app.py
 Restart=always
 RestartSec=3
 
