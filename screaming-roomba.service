@@ -4,10 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=<path-to-CS370_TP>
-ExecStart=<path-to-venv-python> app.py
-Restart=always
-RestartSec=3
+User=userAdmin
+WorkingDirectory=/home/userAdmin/CS370_TP/
+Environment="PYTHONPATH=/home/userAdmin/.local/lib/python3.11/site-packages"
+ExecStart=/home/userAdmin/env/bin/python3.11 /home/userAdmin/CS370_TP/app.py
 
 [Install]
 WantedBy=multi-user.target
