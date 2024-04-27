@@ -1,0 +1,13 @@
+[Unit]
+Description=Screamba Service
+After=network.target
+
+[Service]
+Type=simple
+User=userAdmin
+WorkingDirectory=/home/userAdmin/CS370_TP/
+Environment="PYTHONPATH=/home/userAdmin/.local/lib/python3.11/site-packages"
+ExecStart=/home/userAdmin/env/bin/python3.11 /home/userAdmin/CS370_TP/app.py
+
+[Install]
+WantedBy=multi-user.target
