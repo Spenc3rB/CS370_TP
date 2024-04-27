@@ -96,4 +96,4 @@ if __name__ == '__main__':
     audio_thread.daemon = True
     audio_thread.start()
 
-    app.run(host='0.0.0.0', port=6969, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

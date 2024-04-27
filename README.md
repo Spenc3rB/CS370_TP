@@ -22,19 +22,8 @@ git clone https://github.com/ersmith01/CS370_TP
 ```
 
 To install the adafruit blinka library, run the following commands according to the [adafruit guide](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi):
-```
-cd ~
-pip3 install --upgrade adafruit-python-shell
-wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
-sudo -E env PATH=$PATH python3 raspi-blinka.py
-```
 
-Then, source the following file to set up the roomba python environment:
-```
-source ~/roomba-env/bin/activate
-```
-
-To install the required python packages, run the following command:
+To ensure the required python packages are installed, run the following command:
 ```
 pip3 install -r requirements.txt
 ```
